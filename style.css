@@ -84,14 +84,16 @@ header p {
 }
 
 .row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 24px 1fr;
     align-items: center;
-    justify-content: space-between;
-    padding: 10px;
+    justify-content: center;
+    padding: 12px 16px;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid transparent;
     transition: all 0.3s ease;
+    gap: 8px 12px;
 }
 
 .row.active {
@@ -101,6 +103,8 @@ header p {
 }
 
 .attempt-number {
+    grid-column: 1;
+    grid-row: 1 / span 2;
     width: 24px;
     color: var(--text-secondary);
     font-weight: 600;
@@ -113,7 +117,10 @@ header p {
 }
 
 .guesses {
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
+    justify-content: center;
     gap: 12px;
 }
 
@@ -132,16 +139,18 @@ header p {
 }
 
 .feedback-container {
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
-    flex-wrap: wrap;
-    align-content: center;
+    align-items: center;
     justify-content: center;
     gap: 4px;
-    width: 44px;
-    min-height: 38px;
-    padding: 4px;
+    min-height: 24px;
+    padding: 4px 10px;
     background: rgba(0,0,0,0.2);
-    border-radius: 8px;
+    border-radius: 10px;
+    width: fit-content;
+    justify-self: center;
 }
 
 .pin {
@@ -388,11 +397,11 @@ header p {
     .game-container { padding: 1.25rem; }
     .hole { width: 28px; height: 28px; }
     .guesses { gap: 6px; }
-    .feedback-container { width: 36px; min-height: 28px; gap: 3px; padding: 3px; }
+    .feedback-container { width: auto; min-height: 28px; gap: 3px; padding: 4px 8px; }
     .pin { width: 10px; height: 10px; }
     .color-btn { width: 36px; height: 36px; }
     .secret-hole { width: 28px; height: 28px; }
-    .row { padding: 6px; }
+    .row { padding: 8px; gap: 6px 8px; }
 }
 
 @media (max-width: 380px) {
@@ -402,7 +411,7 @@ header p {
     .guesses { gap: 4px; }
     .color-btn { width: 32px; height: 32px; }
     .attempt-number { font-size: 0.8rem; width: 16px; }
-    .feedback-container { width: 30px; gap: 2px; padding: 2px; }
+    .feedback-container { width: auto; gap: 2px; padding: 4px 6px; }
     .pin { width: 8px; height: 8px; }
     .secret-hole { width: 22px; height: 22px; }
     #level-input { width: 50px; padding: 1px 4px; font-size: 0.85rem; }

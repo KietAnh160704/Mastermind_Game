@@ -16,9 +16,9 @@ const ALL_COLORS = [
     { name: 'Indigo', hex: '#6366f1' }, // Lv 101
     { name: 'Rose', hex: '#f43f5e' },   // Lv 121
     { name: 'Amber', hex: '#f59e0b' },  // Lv 141
-    { name: 'Emerald', hex: '#10b981'}, // Lv 161
+    { name: 'Emerald', hex: '#10b981' }, // Lv 161
     { name: 'Violet', hex: '#8b5cf6' }, // Lv 181
-    { name: 'Fuchsia', hex: '#d946ef'}  // Lv 201
+    { name: 'Fuchsia', hex: '#d946ef' }  // Lv 201
 ];
 
 let currentLevel = parseInt(localStorage.getItem('mastermind_level')) || 1;
@@ -29,7 +29,7 @@ let currentAttempt = 0;
 let currentGuess = [];
 let gameActive = true;
 
-// DOM Elements
+
 const boardEl = document.getElementById('board');
 const paletteEl = document.getElementById('palette');
 const btnDelete = document.getElementById('btn-delete');
@@ -42,18 +42,18 @@ const secretCodeDisplay = document.getElementById('secret-code-display');
 const btnRestart = document.getElementById('btn-restart');
 const levelInput = document.getElementById('level-input');
 
-// Initialize Game
+
 function initGame() {
-    // Dynamic difficulty: holes and rows
+
     let extraDifficulty = currentLevel >= 81 ? Math.floor((currentLevel - 81) / 50) + 1 : 0;
     currentGameRows = 7 + extraDifficulty;
     currentHolesPerRow = 4 + extraDifficulty;
 
-    // Determine level colors: start with 6, add 1 every 20 levels.
+
     let colorCount = 6 + Math.floor((currentLevel - 1) / 20);
-    // Ensure we have enough colors to fill the holes without duplicates
+
     if (colorCount < currentHolesPerRow) colorCount = currentHolesPerRow;
-    if (colorCount > ALL_COLORS.length) colorCount = ALL_COLORS.length;
+    if (colorCount > 12) colorCount = 12; // Tối đa 12 màu
     activeColors = ALL_COLORS.slice(0, colorCount);
 
     if (levelInput) levelInput.value = currentLevel;
@@ -63,7 +63,7 @@ function initGame() {
     if (holesDisplay) holesDisplay.textContent = currentHolesPerRow;
     if (rowsDisplay) rowsDisplay.textContent = currentGameRows;
 
-    // Generate secret code (array of hex colors, no duplicates)
+
     secretCode = [];
     let availableColors = [...activeColors];
     for (let i = 0; i < currentHolesPerRow; i++) {
@@ -71,23 +71,23 @@ function initGame() {
         secretCode.push(availableColors[randomIndex].hex);
         availableColors.splice(randomIndex, 1);
     }
-    
-    // For debugging, print secret code
+
+
     console.log(`Level ${currentLevel} Secret Code:`, secretCode);
 
     currentAttempt = 0;
     currentGuess = [];
     gameActive = true;
 
-    // Clear board and palette
+
     boardEl.innerHTML = '';
     paletteEl.innerHTML = '';
 
     createBoard();
     createPalette();
     updateActiveRow();
-    
-    // Hide modal if open
+
+
     modalOverlay.classList.remove('visible');
     resultModal.classList.remove('visible');
     setTimeout(() => {
@@ -96,7 +96,7 @@ function initGame() {
     }, 300);
 }
 
-// Create Board UI
+
 function createBoard() {
     for (let i = 0; i < currentGameRows; i++) {
         const rowDiv = document.createElement('div');
@@ -180,7 +180,7 @@ function deleteColor() {
 // Update the current row's guess colors
 function updateGuessUI() {
     const currentRow = document.getElementById(`row-${currentAttempt}`);
-    
+
     for (let i = 0; i < currentHolesPerRow; i++) {
         const hole = document.getElementById(`guess-${currentAttempt}-${i}`);
         if (i < currentGuess.length) {
@@ -209,7 +209,7 @@ function updateGuessUI() {
 // Evaluate Truth
 function submitGuess() {
     if (!gameActive) return;
-    
+
     // Ensure all target colors are selected
     if (currentGuess.length < currentHolesPerRow) {
         const currentRow = document.getElementById(`row-${currentAttempt}`);
@@ -222,7 +222,7 @@ function submitGuess() {
     // Logic: calculate exact and partial matches
     let exactMatches = 0;   // Correct color & position -> Green pin
     let partialMatches = 0; // Correct color, wrong position -> Yellow pin
-    
+
     let secretCopy = [...secretCode];
     let guessCopy = [...currentGuess];
 
@@ -264,14 +264,14 @@ function submitGuess() {
 
 function updateFeedbackUI(exact, partial) {
     let pinIndex = 0;
-    
+
     // Add Green pins for exact matches
     for (let i = 0; i < exact; i++) {
         const pin = document.getElementById(`pin-${currentAttempt}-${pinIndex}`);
         pin.classList.add('green');
         pinIndex++;
     }
-    
+
     // Add Yellow pins for partial matches
     for (let i = 0; i < partial; i++) {
         const pin = document.getElementById(`pin-${currentAttempt}-${pinIndex}`);
@@ -282,7 +282,7 @@ function updateFeedbackUI(exact, partial) {
 
 function endGame(isWin) {
     gameActive = false;
-    
+
     // Customize modal
     if (isWin) {
         modalTitle.textContent = "Bạn đã thắng! 🎉";
@@ -326,7 +326,7 @@ function endGame(isWin) {
     // Show modal
     modalOverlay.classList.add('show');
     resultModal.classList.add('show');
-    
+
     // Trigger animations
     setTimeout(() => {
         modalOverlay.classList.add('visible');
@@ -360,7 +360,7 @@ document.addEventListener('keydown', (e) => {
         }
         return;
     }
-    
+
     if (e.key === 'Backspace') {
         deleteColor();
     } else if (e.key === 'Enter') {
