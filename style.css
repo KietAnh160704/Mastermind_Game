@@ -1,0 +1,409 @@
+:root {
+    --bg-color: #0f172a;
+    --board-bg: rgba(30, 41, 59, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --primary-color: #3b82f6;
+    --primary-hover: #2563eb;
+    --danger-color: #ef4444;
+    --danger-hover: #dc2828;
+    
+    --hole-bg: rgba(15, 23, 42, 0.6);
+    --hole-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+    
+    --pin-green: #22c55e;
+    --pin-yellow: #eab308;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.app-wrapper {
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 10;
+}
+
+header {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(to right, #60a5fa, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+
+header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.game-container {
+    background: var(--board-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.board {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.row.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.attempt-number {
+    width: 24px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.row.active .attempt-number {
+    color: var(--text-primary);
+}
+
+.guesses {
+    display: flex;
+    gap: 12px;
+}
+
+.hole {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--hole-bg);
+    box-shadow: var(--hole-shadow);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hole.filled {
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3);
+    transform: scale(1.05);
+}
+
+.feedback-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 4px;
+    width: 44px;
+    min-height: 38px;
+    padding: 4px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+}
+
+.pin {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    transition: all 0.3s ease;
+}
+
+.pin.green {
+    background: var(--pin-green);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.3), 0 1px 3px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.pin.yellow {
+    background: var(--pin-yellow);
+    box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.palette {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.color-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 3px 6px rgba(255,255,255,0.2);
+}
+
+.color-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3), inset 0 3px 6px rgba(255,255,255,0.3);
+}
+
+.color-btn:active {
+    transform: translateY(1px) scale(0.95);
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    backdrop-filter: blur(5px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Modal styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 101;
+    background: rgba(30, 41, 59, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    display: none;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal.show, .overlay.show {
+    display: block;
+}
+
+.modal.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.overlay.visible {
+    opacity: 1;
+}
+
+.modal h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal h2.win {
+    color: #4ade80;
+}
+
+/* Level Input Custom Styling */
+#level-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 2px 8px;
+    border-radius: 8px;
+    width: 65px;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s ease;
+    margin: 0 4px;
+}
+
+#level-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+/* Remove up/down arrows in input number */
+#level-input::-webkit-outer-spin-button,
+#level-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+#level-input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.modal h2.lose {
+    color: #f87171;
+}
+
+.modal p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.secret-reveal {
+    background: rgba(0,0,0,0.3);
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+}
+
+.secret-reveal p {
+    margin-bottom: 0.8rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.secret-code {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.secret-hole {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3);
+}
+
+.btn-large {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@media (max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    header p { font-size: 0.85rem; }
+    .game-container { padding: 1.25rem; }
+    .hole { width: 28px; height: 28px; }
+    .guesses { gap: 6px; }
+    .feedback-container { width: 36px; min-height: 28px; gap: 3px; padding: 3px; }
+    .pin { width: 10px; height: 10px; }
+    .color-btn { width: 36px; height: 36px; }
+    .secret-hole { width: 28px; height: 28px; }
+    .row { padding: 6px; }
+}
+
+@media (max-width: 380px) {
+    header h1 { font-size: 1.5rem; }
+    .game-container { padding: 1rem; }
+    .hole { width: 22px; height: 22px; }
+    .guesses { gap: 4px; }
+    .color-btn { width: 32px; height: 32px; }
+    .attempt-number { font-size: 0.8rem; width: 16px; }
+    .feedback-container { width: 30px; gap: 2px; padding: 2px; }
+    .pin { width: 8px; height: 8px; }
+    .secret-hole { width: 22px; height: 22px; }
+    #level-input { width: 50px; padding: 1px 4px; font-size: 0.85rem; }
+}
