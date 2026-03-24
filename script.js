@@ -29,6 +29,9 @@ let currentAttempt = 0;
 let currentGuess = [];
 let gameActive = true;
 
+let timerInterval;
+let timeElapsed = 0;
+
 
 const boardEl = document.getElementById('board');
 const paletteEl = document.getElementById('palette');
@@ -41,6 +44,7 @@ const modalMessage = document.getElementById('modal-message');
 const secretCodeDisplay = document.getElementById('secret-code-display');
 const btnRestart = document.getElementById('btn-restart');
 const levelInput = document.getElementById('level-input');
+const timerDisplay = document.getElementById('timer-display');
 
 
 function initGame() {
@@ -87,7 +91,20 @@ function initGame() {
     createPalette();
     updateActiveRow();
 
-
+    // Start stopwatch timer
+    clearInterval(timerInterval);
+    timeElapsed = 0;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        if (!gameActive) {
+            clearInterval(timerInterval);
+            return;
+        }
+        timeElapsed++;
+        updateTimerDisplay();
+    }, 1000);
+    
+    // Hide modal if open
     modalOverlay.classList.remove('visible');
     resultModal.classList.remove('visible');
     setTimeout(() => {
@@ -133,6 +150,14 @@ function createBoard() {
 
         boardEl.appendChild(rowDiv);
     }
+}
+
+// Convert seconds to MM:SS and update UI
+function updateTimerDisplay() {
+    if (!timerDisplay) return;
+    const minutes = Math.floor(timeElapsed / 60);
+    const seconds = timeElapsed % 60;
+    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
 // Create Palette UI
@@ -282,13 +307,15 @@ function updateFeedbackUI(exact, partial) {
 
 function endGame(isWin) {
     gameActive = false;
-
+    clearInterval(timerInterval);
+    
     // Customize modal
     if (isWin) {
         modalTitle.textContent = "Bạn đã thắng! 🎉";
         modalTitle.className = "win";
+        const timeStr = timerDisplay ? timerDisplay.textContent : "";
         if (currentLevel >= 200) {
-            modalMessage.textContent = `Tuyệt đỉnh! Bạn đã phá đảo toàn bộ 200 cấp độ của trò chơi!`;
+            modalMessage.textContent = `Tuyệt đỉnh! Bạn đã phá đảo toàn bộ 200 cấp độ của trò chơi, với Cấp cuối trong ${timeStr}.`;
             btnRestart.textContent = "Hoàn thành - Chơi lại từ đầu";
             btnRestart.onclick = () => {
                 currentLevel = 1;
@@ -296,7 +323,7 @@ function endGame(isWin) {
                 initGame();
             };
         } else {
-            modalMessage.textContent = `Tuyệt vời! Bạn đã vượt qua Cấp độ ${currentLevel}.`;
+            modalMessage.textContent = `Thành tích: bạn đã giải mã Cấp độ ${currentLevel} trong ${timeStr}.`;
             btnRestart.textContent = "Chơi Tiếp Level Kế";
             btnRestart.onclick = () => {
                 currentLevel++;
